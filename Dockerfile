@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN apk update && apk add bash
 
-COPY . .
+COPY uploader .

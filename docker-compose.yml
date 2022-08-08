@@ -15,8 +15,8 @@ services:
       - ./postgres:/var/lib/postgresql/data
     
     environment:
-      POSTGRES_DB: "skyetest"
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: "uploader"
+      POSTGRES_USER: "skye"
 
     ports:
       - 5432:5432
