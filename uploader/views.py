@@ -62,4 +62,4 @@ async def get_image(request: Request) -> Response:
         image,
         status_code=200,
         media_type=mime
-    ) 
+    )
