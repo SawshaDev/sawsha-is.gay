@@ -7,6 +7,7 @@ from starlette.responses import (
     Response,
     HTMLResponse
 )
+from config import AUTH
 
 if TYPE_CHECKING:
     from starlette.datastructures import UploadFile, MultiDict
@@ -16,10 +17,24 @@ async def upload_file(request: Request) -> JSONResponse:
     form: MultiDict = await request.form()
     file: UploadFile = form.get("image")
 
+    try:
+        if request.headers['secret'] != AUTH :
+            Invalid = {
+                "message":"Invalid authorization!"
+            }
+
+            return JSONResponse(Invalid, status_code=401)
+    except KeyError:
+        Invalid = {
+                "message":"Invalid authorization!"
+        }
+
+        return JSONResponse(Invalid, status_code=401)
+
     if file is None:
         print("\033[91mReceived an upload request that has not given us a 'file' to upload\033[0m")
         content = {
-            "message": "No 'file' given."
+            "message": "No 'file' given.\nPlease make sure File Form Name is ``image`` not ``Image``"
         }
         return JSONResponse(content, status_code=400)
 
@@ -52,11 +67,14 @@ async def get_image(request: Request) -> Response:
     )   
 
     row = await request.app.pool.fetchrow(query, file_id)
-    image = row["image"]
-    mime = row["mime"]
+    try:
+        image = row["image"]
+        mime = row["mime"]
+    except TypeError:
+        return JSONResponse({"error":"No Image Found!"}, status_code=404)
 
-    if image is None:
-        return Response(None, status_code=404)
+  
+    
 
     return Response(
         image,

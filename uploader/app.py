@@ -24,7 +24,3 @@ app = Starlette(debug=True, routes=routes)
 @app.on_event("startup")
 async def on_startup():
     app.pool = await asyncpg.connect(POSTGRES_DSN)
-    with open("./schema.sql", "r")as f:
-        STARTUP_SCRIPT = f.read()
-
-    await app.pool.execute(STARTUP_SCRIPT)
