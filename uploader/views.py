@@ -20,16 +20,9 @@ async def upload_file(request: Request) -> JSONResponse:
     form: MultiDict = await request.form()
     file: UploadFile = form.get("image")
 
-    try:
-        if request.headers['secret'] != AUTH :
-            Invalid = {
-                "message":"Invalid authorization!"
-            }
-
-            return JSONResponse(Invalid, status_code=401)
-    except KeyError:
+    if request.headers.get('secret') != AUTH :
         Invalid = {
-                "message":"Invalid authorization!"
+            "message": "Invalid authorization!"
         }
 
         return JSONResponse(Invalid, status_code=401)
@@ -79,9 +72,6 @@ async def get_image(request: Request) -> Response:
         mime = row["mime"]
     except TypeError:
         return JSONResponse({"error":"No Image Found!"}, status_code=404)
-
-  
-    
 
     return Response(
         image,
