@@ -20,7 +20,7 @@ async def upload_file(request: Request) -> JSONResponse:
     form: MultiDict = await request.form()
     file: UploadFile = form.get("image")
 
-    if request.headers.get('secret') != AUTH :
+    if request.headers.get('secret') != AUTH:
         Invalid = {
             "message": "Invalid authorization!"
         }
@@ -58,7 +58,7 @@ async def get_image(request: Request) -> Response:
     try: 
         file_ext = f"image/{file_name.split('.')[1]}"
     except IndexError:
-        return JSONResponse({"error":"No extension found! please make sure there's an extension like ``.png``!"}, status_code=404)
+        return JSONResponse({"error": "No extension found! please make sure there's an extension like ``.png``!"}, status_code=404)
     file_id = file_name.split(".")[0]
 
 
@@ -71,7 +71,7 @@ async def get_image(request: Request) -> Response:
         image = row["image"]
         mime = row["mime"]
     except TypeError:
-        return JSONResponse({"error":"No Image Found!"}, status_code=404)
+        return JSONResponse({"error": "No Image Found!"}, status_code=404)
 
     return Response(
         image,
