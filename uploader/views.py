@@ -14,6 +14,13 @@ if TYPE_CHECKING:
     from starlette.datastructures import UploadFile, MultiDict
 
 logger = logging.getLogger(__name__)
+content_type = {
+    "png":"image/png",
+    "jpeg":"image/jpeg",
+    "jpg":"image/jpg",
+    "gif":"image/gif",
+    "mp4":'video/mp4'
+}
 
 
 async def upload_file(request: Request) -> JSONResponse:
@@ -56,9 +63,10 @@ async def upload_file(request: Request) -> JSONResponse:
 async def get_image(request: Request) -> Response:
     file_name: str = request.path_params.get("name")
     try: 
-        file_ext = f"image/{file_name.split('.')[1]}"
+        file_ext = content_type.get(file_name.split('.')[1])
+        print(file_ext)
     except IndexError:
-        return JSONResponse({"error": "No extension found! please make sure there's an extension like ``.png``!"}, status_code=404)
+        return JSONResponse({"error":"No extension found! please make sure there's an extension like ``.png``!"}, status_code=404)
     file_id = file_name.split(".")[0]
 
 
@@ -71,10 +79,4 @@ async def get_image(request: Request) -> Response:
         image = row["image"]
         mime = row["mime"]
     except TypeError:
-        return JSONResponse({"error": "No Image Found!"}, status_code=404)
-
-    return Response(
-        image,
-        status_code=200,
-        media_type=mime
-    )
+        return JSONResponse({"error":"No Image Found!"}, status_code=404)
