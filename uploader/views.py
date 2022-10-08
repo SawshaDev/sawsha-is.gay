@@ -56,8 +56,9 @@ async def upload_file(request: Request) -> JSONResponse:
 async def get_image(request: Request) -> Response:
     file_name: str = request.path_params.get("name")
     try: 
+        types = {'plain' : 'text/plain', 'mp4' : 'video/mp4', 'png' : 'image/png'}
         ext = file_name.split('.')[1]
-        file_ext = f"image/{file_ext}" if file_ext != "mp4" else f"video/{file_ext}"
+        file_ext = types.get(file_ext, f"image/{file_ext}")
     except IndexError:
         return JSONResponse({"error": "No extension found! please make sure there's an extension like ``.png``!"}, status_code=404)
     file_id = file_name.split(".")[0]
