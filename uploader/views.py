@@ -80,3 +80,9 @@ async def get_image(request: Request) -> Response:
         mime = row["mime"]
     except TypeError:
         return JSONResponse({"error":"No Image Found!"}, status_code=404)
+    
+    return Response(
+        image,
+        status_code=200,
+        media_type=mime
+    )
