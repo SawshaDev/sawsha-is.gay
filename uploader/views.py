@@ -48,10 +48,7 @@ async def upload_file(request: Request) -> JSONResponse:
     mime = file.content_type
 
     await request.app.pool.execute("INSERT INTO images (name, image, mime) VALUES ($1, $2, $3)",  name, image, mime)
-    file_ext = "png"
-    if mime:
-        file_ext = mime.split("/")[1]
-
+    file_ext = mime.split("/")[1] if mime else "png"
     content = {
         "status": 200,
         "file_id": name,
