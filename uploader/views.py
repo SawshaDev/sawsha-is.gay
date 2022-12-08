@@ -48,10 +48,7 @@ async def upload_file(request: Request) -> JSONResponse:
     mime = file.content_type
 
     await request.app.pool.execute("INSERT INTO images (name, image, mime) VALUES ($1, $2, $3)",  name, image, mime)
-    file_ext = "png"
-    if mime:
-        file_ext = mime.split("/")[1]
-
+    file_ext = mime.split("/")[1] if mime else "png"
     content = {
         "status": 200,
         "file_id": name,
@@ -70,9 +67,7 @@ async def get_image(request: Request) -> Response:
     file_id = file_name.split(".")[0]
 
 
-    query = (
-        f"SELECT image, mime FROM images WHERE name = $1 AND mime = $2"
-    )   
+    query = "SELECT image, mime FROM images WHERE name = $1 AND mime = $2"
 
     row = await request.app.pool.fetchrow(query, file_id, file_ext)
     try:
@@ -80,7 +75,7 @@ async def get_image(request: Request) -> Response:
         mime = row["mime"]
     except TypeError:
         return JSONResponse({"error":"No Image Found!"}, status_code=404)
-    
+
     return Response(
         image,
         status_code=200,
