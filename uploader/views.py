@@ -67,9 +67,7 @@ async def get_image(request: Request) -> Response:
     file_id = file_name.split(".")[0]
 
 
-    query = (
-        f"SELECT image, mime FROM images WHERE name = $1 AND mime = $2"
-    )   
+    query = "SELECT image, mime FROM images WHERE name = $1 AND mime = $2"
 
     row = await request.app.pool.fetchrow(query, file_id, file_ext)
     try:
@@ -77,7 +75,7 @@ async def get_image(request: Request) -> Response:
         mime = row["mime"]
     except TypeError:
         return JSONResponse({"error":"No Image Found!"}, status_code=404)
-    
+
     return Response(
         image,
         status_code=200,
